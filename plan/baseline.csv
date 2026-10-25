@@ -1,0 +1,93 @@
+truck,act_key,base_start,base_end,assigned_to,imported_progress
+RD220,trailing_lower,2026-09-18,2026-09-18,,1.0
+RD220,trunnion_cap,2026-09-19,2026-09-23,,1.0
+RD220,trunnion_mod,2026-09-23,2026-10-07,,1.0
+RD220,high_arch,2026-10-08,2026-10-12,,1.0
+RD220,nose_cone,2026-09-18,2026-09-19,,1.0
+RD220,rhs_seat,2026-09-21,2026-09-22,,1.0
+RD221,trailing_lower,2026-09-18,2026-09-18,,1.0
+RD221,trunnion_cap,2026-09-19,2026-09-23,,1.0
+RD221,trunnion_mod,2026-10-11,2026-10-15,,1.0
+RD221,high_arch,2026-10-18,2026-10-22,,1.0
+RD221,nose_cone,2026-09-30,2026-10-01,,1.0
+RD221,rhs_seat,2026-10-01,2026-10-02,,1.0
+RD222,trailing_lower,2026-10-18,2026-10-18,,1.0
+RD222,trunnion_cap,2026-10-18,2026-10-23,,1.0
+RD222,trunnion_mod,2026-10-26,2026-10-30,,0.0
+RD222,trailing_assy,2026-10-23,2026-10-23,,0.0
+RD222,high_arch,2026-10-12,2026-10-17,,1.0
+RD222,nose_cone,2026-10-11,2026-10-12,,1.0
+RD222,rhs_seat,2026-10-18,2026-10-18,,1.0
+RD222,lhs_seat,2026-10-26,2026-10-26,,0.0
+RD223,trailing_lower,2026-10-14,2026-10-14,SWB - John,1.0
+RD223,trunnion_cap,2026-10-18,2026-10-23,SWB - John,0.5
+RD223,trunnion_mod,2026-10-15,2026-10-15,SWB - John,1.0
+RD223,trailing_assy,2026-10-23,2026-10-23,,0.0
+RD223,high_arch,2026-10-23,2026-10-28,SWB - Andrew,0.0
+RD223,nose_cone,2026-10-17,2026-10-17,SWB - Andrew,1.0
+RD223,rhs_seat,2026-10-23,2026-10-23,SWB - John,0.0
+RD223,lhs_seat,2026-10-23,2026-10-23,SWB - John,0.0
+RD224,trailing_lower,2026-10-26,2026-10-26,SWB - John,0.0
+RD224,trunnion_cap,2026-10-29,2026-11-08,SWB - John,0.0
+RD224,trunnion_mod,2026-11-09,2026-11-13,SWB - John,0.0
+RD224,trailing_assy,2026-11-14,2026-11-14,,0.0
+RD224,high_arch,2026-11-02,2026-11-04,SWB - Andrew,0.0
+RD224,nose_cone,2026-11-02,2026-11-06,SWB - Andrew,0.0
+RD224,rhs_seat,2026-11-09,2026-11-10,SWB - John,0.0
+RD224,lhs_seat,2026-11-11,2026-11-12,SWB - John,0.0
+RD225,trailing_lower,2026-10-30,2026-10-30,SWB - John,0.0
+RD225,trunnion_cap,2026-11-07,2026-11-13,SWB - John,0.0
+RD225,trunnion_mod,2026-11-16,2026-11-20,SWB - John,0.0
+RD225,trailing_assy,2026-11-21,2026-11-21,,0.0
+RD225,high_arch,2026-11-09,2026-11-11,SWB - Andrew,0.0
+RD225,nose_cone,2026-11-02,2026-11-06,SWB - Andrew,0.0
+RD225,rhs_seat,2026-11-09,2026-11-10,SWB - John,0.0
+RD225,lhs_seat,2026-11-16,2026-11-16,SWB - John,0.0
+RD226,trailing_lower,2026-11-09,2026-11-09,SWB - John,0.0
+RD226,trunnion_cap,2026-10-29,2026-11-08,SWB - John,0.0
+RD226,trunnion_mod,2026-11-23,2026-11-27,SWB - John,0.0
+RD226,trailing_assy,2026-11-28,2026-11-28,,0.0
+RD226,high_arch,2026-11-16,2026-11-18,SWB - Andrew,0.0
+RD226,nose_cone,2026-11-19,2026-11-20,SWB - Andrew,0.0
+RD226,rhs_seat,2026-11-23,2026-11-24,SWB - John,0.0
+RD226,lhs_seat,2026-11-25,2026-11-26,SWB - John,0.0
+RD227,trailing_lower,2026-11-18,2026-11-18,SWB - John,0.0
+RD227,trunnion_cap,2026-11-19,2026-11-19,SWB - John,0.0
+RD227,trunnion_mod,2026-11-30,2026-12-03,SWB - John,0.0
+RD227,trailing_assy,2026-12-04,2026-12-04,,0.0
+RD227,high_arch,2026-11-23,2026-11-25,SWB - Andrew,0.0
+RD227,nose_cone,2026-11-26,2026-11-27,SWB - Andrew,0.0
+RD227,rhs_seat,2026-11-30,2026-12-01,SWB - John,0.0
+RD227,lhs_seat,2026-12-02,2026-12-02,SWB - John,0.0
+RD228,trailing_lower,2026-11-18,2026-11-18,SWB - John,0.0
+RD228,trunnion_cap,2026-11-19,2026-11-19,SWB - John,0.0
+RD228,trunnion_mod,2026-12-04,2026-12-07,SWB - John,0.0
+RD228,trailing_assy,2026-12-04,2026-12-04,,0.0
+RD228,high_arch,2026-10-28,2026-10-31,SWB - Andrew,0.0
+RD228,nose_cone,2026-10-28,2026-10-31,SWB - Andrew,0.0
+RD228,rhs_seat,2026-10-28,2026-10-29,SWB - John,0.0
+RD228,lhs_seat,2026-10-28,2026-10-29,SWB - John,0.0
+RD229,trailing_lower,2026-12-04,2026-12-04,,0.0
+RD229,trunnion_cap,,,,0.0
+RD229,trunnion_mod,2026-12-08,2026-12-11,,0.0
+RD229,trailing_assy,2026-12-16,2026-12-16,,0.0
+RD229,high_arch,2026-12-07,2026-12-09,,0.0
+RD229,nose_cone,2026-12-10,2026-12-12,,0.0
+RD229,rhs_seat,2026-12-14,2026-12-14,,0.0
+RD229,lhs_seat,2026-12-14,2026-12-14,,0.0
+RD230,trailing_lower,2026-12-11,2026-12-11,,0.0
+RD230,trunnion_cap,,,,0.0
+RD230,trunnion_mod,2026-12-14,2026-12-17,,0.0
+RD230,trailing_assy,2026-12-24,2026-12-24,,0.0
+RD230,high_arch,2026-12-14,2026-12-16,,0.0
+RD230,nose_cone,2026-12-17,2026-12-22,,0.0
+RD230,rhs_seat,2026-12-23,2026-12-23,,0.0
+RD230,lhs_seat,2026-12-21,2026-12-21,,0.0
+RD231,trailing_lower,2026-12-11,2026-12-11,,0.0
+RD231,trunnion_cap,,,,0.0
+RD231,trunnion_mod,2026-12-18,2026-12-23,,0.0
+RD231,trailing_assy,2026-12-25,2026-12-25,,0.0
+RD231,high_arch,2026-12-14,2026-12-16,,0.0
+RD231,nose_cone,2026-12-17,2026-12-22,,0.0
+RD231,rhs_seat,2026-12-23,2026-12-23,,0.0
+RD231,lhs_seat,2026-12-24,2026-12-24,,0.0
