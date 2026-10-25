@@ -1,0 +1,57 @@
+sop,item,note_en,note_jp,source
+HA,Materials,HT490 RHS/LHS cover plate x1 each; SS400 backing plate x2.,HT490左右カバープレート各1枚、SS400裏当て板2枚。,SOP pp.3–4
+HA,Welding,Semi-auto AWS A5.18 ER70S-G or hand AWS A5.1 E7016/E7018 equivalent per approved WPS.,半自動溶接ER70S-Gまたは手溶接E7016/E7018相当。承認WPSに従う。,SOP p.1
+HA,Preheat,Preheat 30–50°C when ambient is below 10°C for gouging/welding.,気温10℃未満でガウジング・溶接する際は30～50℃に予熱する。,SOP p.1
+HA,Ground cable,Disconnect battery negative before welding; remove/reinstall four earth cables near work area.,溶接前にバッテリーマイナスを外し、作業部付近のアースケーブル4本を脱着する。,"SOP pp.1,5,15"
+HA,Cab support bolts,Inspect four bolts/washers; replace abnormal parts; installation torque 1750 N·m.,ボルト・ワッシャ4組を点検し異常品を交換。取付トルク1750 N·m。,"SOP pp.5,15"
+HA,Crack branch,Repair depends on penetrating vs nonpenetrating crack; do not interchange details.,貫通／非貫通亀裂に応じた補修詳細を選択する。,SOP p.8
+HA,R5,R5 or greater on engine-side plate per Section I; verify approved geometry.,断面Iに従いエンジン側プレートのR5以上を確認する。,SOP p.11
+HA,Weld QC,Welder measures and marks white; supervisor double checks; yellow final OK and photo.,溶接者が測定・白色記入、監督者が再検査、黄色OKと写真を保存する。,Internal QC pp.2–3
+HA,Acceptance,HGS acceptance criteria referenced but not supplied; obtain approved HGS and WPS before final acceptance.,合否基準のHGS本文は添付されていない。承認HGS・WPSを入手して判定する。,Internal QC p.2
+HA,Man-hours,Planned MH deliberately blank pending workshop estimate and approved sequence.,予定工数は現場見積・承認まで空欄とする。,Project control assumption
+HA,Scope,Work sequence includes both sides where specified; QC may require side-specific evidence.,指定箇所は左右両側を対象とし、品質記録は左右別に保存する。,SOP pp.7–14
+NC,Source,4 & 5. Nose Cone Mounting Bracket Crack Front & Rear.pdf provided by Yuya Tada (4 pages),,
+NC,Scope,Countermeasure step 1: crack repair; step 2: reinforcement welding bead. Four locations indicated.,,
+NC,Conditional scope,"Do not assume every new truck has a crack. Crack repair tasks NC-005–NC-009 apply only when cracks are present and repair is authorized, contact Supervisor if crack is visible",,
+NC,Material,Nose-cone bracket SCMn2B. Drawing requires 200–250°C preheat for gouging and welding.,,
+NC,Consumable,Bracket hand welding: KOBELCO LB-52 or equivalent AWS A5.1 E7016 or E7018. Other weld-bead consumables on page 1 apply to different weld category; verify with WPS.,,
+NC,Drawing dimensions,Follow drawing detail 1 and views C/D; do not use spreadsheet as a substitute for dimensioned drawing.,,
+NC,Quality,"WPS, NDT method, acceptance criteria, temperature monitoring method and engineering release to be confirmed.",,
+NC,Planned MH,Blank intentionally. Engineering drawings do not provide reliable task durations; estimate after site assessment and method confirmation.,,
+NC,Personnel and dates,"Blank for supervisor assignment, technician/welder assignment and Zambia planned dates.",,
+NC,Predecessor logic,"NC-010 follows NC-004 if no cracks, or NC-009 if cracks repaired; per-location routing required.",,
+NC,Safety,"Hot-work permit, access, lifting/working at height, isolation, ventilation and fire watch as applicable per site rules.",,
+NC,Evidence,"Photographs requried to illustrate after-modification views; use for documentation reference, not as sole acceptance criteria.",,
+MF,Document,18. Main Frame Crack (Bottom Plate) RHS; reference EH-PSG00169,主フレーム亀裂（底板・右側）、資料番号 EH-PSG00169,"p.1,8"
+MF,Conditional sequence,"If no cracks found, execute only manual Step 1 and Step 3.",亀裂がない場合は、資料のステップ1とステップ3のみ実施する。,p.1
+MF,Mandatory NDI,Perform NDI at original seat-screw location before relocating; repair internal defects first.,移設前に元のシートスクリュー位置を非破壊検査し、内部欠陥があれば先に補修する。,p.1
+MF,Seat screw removal,Existing seat screw: YA40007914,既設シートスクリュー：YA40007914,p.2
+MF,Crack repair,"Sections C–E show crack excavation, welding and grinding; 20 mm additional longitudinal removal indicated.",断面C～Eに亀裂除去・溶接・研削を示す。長手方向20mm追加除去の指示あり。,p.4–5
+MF,Relocated seat screw,Part drawing YA40007186; placement per Detail a.,移設部品図 YA40007186、取付位置は詳細図aに従う。,"p.6,8"
+MF,No weld areas,Detail b explicitly marks plate edges DO NOT WELD.,詳細図bに板端部の溶接禁止が明示されている。,p.6
+MF,Weld finishing,View F–F indicates grind to extend bead approximately 30 mm.,F–F矢視図にビードを約30mm延長する研削仕上げ指示がある。,p.7
+MF,Consumables,Manual references NITTETSU YM-26 (AWS A5.18 ER70S-G) or KOBELCO LB-26 (AWS A5.1 E7016) or equivalents.,資料記載の溶接材料：YM-26（ER70S-G）、LB-26（E7016）または同等品。,p.7
+MF,Preheat,30–50°C when ambient temperature is below 10°C during gouging/welding.,外気温10°C未満でガウジング・溶接する場合は30～50°Cに予熱する。,p.7
+MF,Planning assumptions,"Task splitting, QC hold points and Japanese explanations are project controls; not verbatim manual steps.",作業細分化、品質ホールドポイント、日本語説明は管理用の提案であり、資料原文そのものではない。,Project planning
+MF,Labor estimates,Planned MH left blank pending workshop estimation; do not assume durations from drawing.,図面に作業時間の指定がないため、予定工数は現場見積りまで空欄とする。,Project planning
+LS,Scope,Crack repair and addition of reinforcement parts to LHS upright seat screw area.,左側アップライトのシートスクリュー部のクラック補修と補強板追加。,p1
+LS,Patch,YA00112843; SS400; PL6 135 × 180; DO NOT PAINT.,補強板 YA00112843、SS400、板厚6 mm、135×180 mm、塗装禁止。,p6
+LS,Seat screw,YA00055776 shown in drawing.,図面にシートスクリュー YA00055776 が記載されている。,"p3,p5"
+LS,Crack removal,Gouge or grind crack and extend at least 10 mm lengthwise; weld and grind flush.,クラックをガウジング／研削で除去し、長手方向に10 mm以上延長。溶接後に平滑仕上げ。,p3
+LS,Consumables,Semi-automatic NITTETSU YM-26 or equivalent AWS A5.18 ER70S-G; manual KOBELCO LB-26 or equivalent AWS A5.1 E7016/E7018.,半自動溶接：日鉄YM-26相当（AWS A5.18 ER70S-G）。手溶接：神鋼LB-26相当（AWS A5.1 E7016/E7018）。,p7
+LS,Preheat,30–50°C only when ambient is below 10°C for gouging/welding.,外気温10°C未満の場合、ガウジングおよび溶接時に30～50°C予熱する。,p7
+LS,Weld details,"Observe Sections C–F and Details g/h, including 6 mm weld indications, 30 mm and 20 mm blended areas.",断面C～Fおよび詳細図g・h、6 mm溶接指示、30 mm・20 mmの仕上げ範囲を遵守する。,p4–5
+LS,QC checkpoints,Inspection hold points and sign-off are proposed project controls; inspection method and acceptance criteria require approved QC/WPS.,検査停止点と承認欄はプロジェクト管理上の追加提案。検査方法と合否基準は承認済みQC計画／WPSで確認する。,Project control addition
+LS,Planning,"Man-hours, supervisors, personnel and dates intentionally blank until workshop planning.",工数、監督者、作業者、日付は現場計画確定まで空欄とする。,Planning assumption
+LS,Applicability,Verify whether crack repair is necessary on each new truck; reinforcement is the stated countermeasure.,新車ごとにクラック補修の必要性を確認する。補強部品追加が指定対策である。,p1–3
+LHS,Procedure,"Common to SS400 and HT490; ER70S-G semi-auto, E7016/E7018 hand welding",SS400とHT490に共通。半自動ER70S-G、手溶接E7016/E7018。,p.1
+LHS,Preheat,30–50°C if ambient <10°C while gouging/welding,ガウジング・溶接時、外気温10°C未満なら30～50°Cに予熱。,p.1
+LHS,Safety,Disconnect battery negative ground before welding; protect against spatter; do not ground far from welding location,溶接前にバッテリーのマイナス側アースを外し、スパッタ対策を行い、アースは溶接箇所の近くに接続する。,p.1
+LHS,Parts,Seat screw SS ×2; bracket SS ×1,シートスクリューSS材2個、ブラケットSS材1個。,p.2
+LHS,Reference point,"Use landmark screw on hoist plate, not bottom plate",基準はホイストプレート上のシートスクリュー（底板上ではない）。,p.4
+LHS,Layout,"Offsets 28, 32, 13 mm; 145, 176, 31 mm; 80, 120, 80 mm",位置決め寸法28、32、13 mm／145、176、31 mm／80、120、80 mm。,p.5
+LHS,Weld exclusion,"DO NOT WELD #7 AREA, Detail m",詳細図mの#7領域は溶接禁止。,p.3
+LHS,Orientation,Polished smaller side is weld side; sharp larger side is bolt insertion side,研磨端面・小面積側が溶接側、鋭利端面・大面積側がボルト挿入側。,p.6
+LHS,Bracket installation,Bracket fabrication is shown but detailed installation sequence is not supplied; obtain engineering instruction,ブラケット製作図はあるが、詳細な取付手順は添付されていない。技術指示を取得する。,p.2 / OPEN
+LHS,Crack repair,"General gouging and welding guidance supplied, but detailed crack excavation geometry and NDT acceptance not specified",ガウジング・溶接の一般指示はあるが、亀裂除去形状と非破壊検査合否基準は記載なし。,p.1–2 / OPEN
+LHS,Language control,Japanese task explanations are translations for field use; original drawing language and dimensions govern,日本語の作業説明は現場用翻訳。正式な図面と寸法を優先する。,Project control note
