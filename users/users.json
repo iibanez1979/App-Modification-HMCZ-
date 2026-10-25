@@ -1,0 +1,12 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "name": "Administrator user",
+      "role": "admin",
+      "hash": "$2b$12$MQMTuRQsvl/mit.YIRpV..UTX/83vaDGJ7PVNfNB6D9j3gWKamvzq",
+      "active": true,
+      "updated": "2026-10-25T23:24:15+00:00"
+    }
+  ]
+}
