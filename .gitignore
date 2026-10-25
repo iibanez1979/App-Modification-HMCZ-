@@ -218,3 +218,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+.DS_Store
+.claude/
+.agents/
+
+# Datos del modo local (pruebas)
+local_data/
