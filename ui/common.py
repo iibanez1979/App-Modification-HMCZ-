@@ -11,7 +11,7 @@ import pandas as pd
 import streamlit as st
 
 from core import config
-from core.auth import User
+from core.auth import USERS_PATH, User, check_password, dump_users, hash_password, stamp
 from core.project import Project
 from storage.base import StorageError, Store
 
@@ -26,7 +26,6 @@ class Ctx:
     users: dict[str, User]
     lang: str
     t: T
-    emergency: bool = False
 
 
 # ─── Formatos ─────────────────────────────────────────────────────────────
@@ -117,3 +116,28 @@ def show_flash() -> None:
     msg = st.session_state.pop("flash", None)
     if msg:
         st.toast(msg, icon=":material/check_circle:")
+
+
+# ─── Cambio de contraseña propia ──────────────────────────────────────────
+def password_form(ctx: Ctx, key: str) -> None:
+    """Cada usuario solo puede cambiar su propia contraseña."""
+    t, user = ctx.t, ctx.user
+    with st.form(key, clear_on_submit=True):
+        old = st.text_input(t("current_password"), type="password")
+        new = st.text_input(t("new_password"), type="password", help=t("password_help"))
+        new2 = st.text_input(t("confirm_password"), type="password")
+        if st.form_submit_button(t("save"), icon=":material/key:"):
+            if not check_password(old, user.hash):
+                st.error(t("err_current_password"))
+            elif len(new) < 8:
+                st.error(t("err_password_short"))
+            elif new != new2:
+                st.error(t("err_password_match"))
+            else:
+                updated = dict(ctx.users)
+                updated[user.username] = stamp(User(**{**vars(user), "hash": hash_password(new)}))
+                try:
+                    ctx.store.write(USERS_PATH, dump_users(updated), f"[app] cambio de contraseña · {user.username}")
+                    st.success(t("password_changed"))
+                except StorageError as exc:
+                    st.error(f"{t('save_failed')} {exc}")

@@ -1,5 +1,6 @@
 """Vista del administrador: resumen, alertas, Gantt, plan (fechas), detalle por
-camión, atrasos, reportes, configuración y usuarios."""
+camión, atrasos, reportes y configuración del proyecto. Los usuarios no se
+gestionan desde la app (ver scripts/users.py)."""
 
 from __future__ import annotations
 
@@ -9,13 +10,13 @@ import pandas as pd
 import streamlit as st
 
 from core import config
-from core.auth import User, dump_users, hash_password, stamp, validate_new, USERS_PATH
 from core.events import write_event
+from core.executive_report import build_executive_pdf
 from core.reports import build_excel, status_csv
 from core.workdays import WorkCalendar
-from ui.common import (Ctx, act_name, fmt_date, fmt_pct, fmt_ts, kpi_cards, note, safe_write, section,
+from ui.common import (Ctx, act_name, fmt_date, fmt_pct, fmt_ts, kpi_cards, note, password_form, safe_write, section,
                        truck_badge, truck_label, esc)
-from ui.gantt import gantt_figure
+from ui.gantt import gantt_figure, truck_gantt_figure
 
 EDITABLE_STATUSES = ("in_progress", "overdue", "upcoming", "no_dates")
 
@@ -45,7 +46,9 @@ def render(ctx: Ctx) -> None:
         _reports(ctx)
     with tabs[6]:
         _settings(ctx)
-        _users(ctx)
+        if not ctx.user.is_master:  # la contraseña del maestro está en los secretos
+            section(t("change_password"))
+            password_form(ctx, "chg_pw_settings")
 
 
 # ─── 1. Resumen ───────────────────────────────────────────────────────────
@@ -181,11 +184,15 @@ def _gantt(ctx: Ctx) -> None:
                  | (show_future & tr.status.eq("future"))
                  | (show_done & tr.status.eq("completed"))].truck.tolist()
     trucks = c3.multiselect(t("trucks"), allowed, default=allowed, key=f"g_sel_{show_future}_{show_done}")
-    show_base = st.checkbox(t("show_baseline"), value=True, key="g_base")
+    c1, c2 = st.columns([2, 3], vertical_alignment="center")
+    mode = c1.segmented_control(t("gantt_mode"), ["truck", "activity"], default="truck", key="g_mode",
+                                format_func=lambda m: t("gantt_by_" + m), label_visibility="collapsed") or "truck"
+    show_base = c2.checkbox(t("show_baseline"), value=True, key="g_base")
     if not trucks:
         note(t("select_trucks"))
         return
-    st.plotly_chart(gantt_figure(p, t, sorted(trucks), show_base), width="stretch",
+    build = truck_gantt_figure if mode == "truck" else gantt_figure
+    st.plotly_chart(build(p, t, sorted(trucks), show_base), width="stretch",
                     config={"displaylogo": False, "modeBarButtonsToRemove": ["select2d", "lasso2d"]})
     st.caption(t("gantt_help"))
 
@@ -449,25 +456,48 @@ def _delays(ctx: Ctx) -> None:
 
 # ─── 6. Reportes ──────────────────────────────────────────────────────────
 def _reports(ctx: Ctx) -> None:
-    t, p = ctx.t, ctx.project
-    note(t("reports_help"))
+    """Los archivos se generan solo al presionar el botón: Streamlit ejecuta todas
+    las pestañas en cada clic y generarlos siempre haría lenta toda la vista."""
+    t, p, ss = ctx.t, ctx.project, st.session_state
     stamp_ = p.today.isoformat()
-    c1, c2, c3 = st.columns(3)
-    xlsx = build_excel(p)
-    c1.download_button(t("download_excel"), xlsx, file_name=f"HMCZ_status_{stamp_}.xlsx",
-                       mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                       icon=":material/download:", type="primary", width="stretch")
-    c2.download_button(t("download_csv"), status_csv(p), file_name=f"HMCZ_status_{stamp_}.csv", mime="text/csv",
-                       icon=":material/table:", width="stretch")
-    if c3.button(t("publish_report"), icon=":material/cloud_upload:", width="stretch", help=t("publish_help")):
+    tz = p.settings.get("timezone", "UTC")
+
+    c1, c2 = st.columns([1, 2], vertical_alignment="center")
+    if c1.button(t("generate_reports"), icon=":material/autorenew:", type="primary", width="stretch"):
+        with st.spinner(t("generating")):
+            ss.reports = {
+                "pdf": build_executive_pdf(p), "xlsx": build_excel(p), "csv": status_csv(p),
+                "stamp": stamp_, "ts": pd.Timestamp.now(tz="UTC").isoformat(),
+            }
+    rep = ss.get("reports")
+    if not rep:
+        c2.caption(t("generate_help"))
+        return
+    c2.caption(t("generated_at", when=fmt_ts(rep["ts"], tz)))
+
+    section(t("executive_report"))
+    note(t("executive_help"))
+    c1, c2, _ = st.columns(3)
+    c1.download_button(t("download_pdf"), rep["pdf"], file_name=f"HMCZ_executive_report_{rep['stamp']}.pdf",
+                       mime="application/pdf", icon=":material/picture_as_pdf:", type="primary", width="stretch")
+    if c2.button(t("publish_report"), icon=":material/cloud_upload:", width="stretch", help=t("publish_help")):
         def publish() -> None:
-            ctx.store.write("reports/estado_actual.csv", status_csv(p), f"[app] reporte actual · por {ctx.user.username}")
-            ctx.store.write(f"reports/HMCZ_status_{stamp_}.xlsx", xlsx, f"[app] reporte {stamp_} · por {ctx.user.username}")
+            ctx.store.write(f"reports/HMCZ_executive_report_{rep['stamp']}.pdf", rep["pdf"],
+                            f"[app] reporte ejecutivo {rep['stamp']} · por {ctx.user.username}")
         if safe_write(ctx, publish, t("published")):
             st.rerun()
 
+    section(t("data_export"))
+    note(t("reports_help"))
+    c1, c2, _ = st.columns(3)
+    c1.download_button(t("download_excel"), rep["xlsx"], file_name=f"HMCZ_status_{rep['stamp']}.xlsx",
+                       mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                       icon=":material/download:", width="stretch")
+    c2.download_button(t("download_csv"), rep["csv"], file_name=f"HMCZ_status_{rep['stamp']}.csv", mime="text/csv",
+                       icon=":material/table:", width="stretch")
 
-# ─── 7. Configuración y usuarios ──────────────────────────────────────────
+
+# ─── 7. Configuración ──────────────────
 def _settings(ctx: Ctx) -> None:
     t, p = ctx.t, ctx.project
     s = p.settings
@@ -503,62 +533,3 @@ def _settings(ctx: Ctx) -> None:
                                                        "settings"), t("settings_saved")):
                     st.rerun()
     st.caption(t("data_location", where=ctx.store.label))
-
-
-def _save_users(ctx: Ctx, users: dict[str, User], msg: str) -> None:
-    if safe_write(ctx, lambda: ctx.store.write(USERS_PATH, dump_users(users),
-                                               f"[app] usuarios · por {ctx.user.username}"), msg):
-        st.rerun()
-
-
-def _users(ctx: Ctx) -> None:
-    t = ctx.t
-    users = {k: User(**vars(v)) for k, v in ctx.users.items()}  # copia editable
-    section(t("users"))
-    if users:
-        st.dataframe(pd.DataFrame([{"username": u.username, "name": u.name, "role": t("role_" + u.role),
-                                    "active": u.active} for u in users.values()]),
-                     hide_index=True, width="stretch", column_config={
-                         "username": t("username"), "name": t("full_name"), "role": t("role"),
-                         "active": st.column_config.CheckboxColumn(t("active"))})
-
-    c1, c2 = st.columns(2)
-    with c1, st.form("add_user", clear_on_submit=True):
-        st.markdown(f"**{t('add_user')}**")
-        username = st.text_input(t("username"), help=t("username_help")).strip().lower()
-        name = st.text_input(t("full_name"))
-        role = st.selectbox(t("role"), config.ROLES, index=1, format_func=lambda r: t("role_" + r))
-        pw = st.text_input(t("temp_password"), type="password", help=t("password_help"))
-        if st.form_submit_button(t("add_user"), icon=":material/person_add:"):
-            err = validate_new(username, pw, users)
-            if err or not name.strip():
-                st.error(t(err or "err_name"))
-            else:
-                users[username] = stamp(User(username, name.strip(), role, hash_password(pw)))
-                _save_users(ctx, users, t("user_added", user=username))
-
-    with c2:
-        if not users:
-            return
-        st.markdown(f"**{t('edit_user')}**")
-        sel = st.selectbox(t("username"), sorted(users), key="edit_user_sel")
-        u = users[sel]
-        with st.form(f"edit_{sel}"):
-            name = st.text_input(t("full_name"), value=u.name)
-            role = st.selectbox(t("role"), config.ROLES, index=config.ROLES.index(u.role), format_func=lambda r: t("role_" + r))
-            active = st.checkbox(t("active"), value=u.active)
-            pw = st.text_input(t("new_password_opt"), type="password", help=t("password_help"))
-            if st.form_submit_button(t("save_user"), icon=":material/save:"):
-                admins_left = [x for x in users.values() if x.is_admin and x.active and x.username != sel]
-                if (role != "admin" or not active) and u.is_admin and not admins_left:
-                    st.error(t("err_last_admin"))
-                elif sel == ctx.user.username and not active:
-                    st.error(t("err_self_deactivate"))
-                elif pw and len(pw) < 8:
-                    st.error(t("err_password_short"))
-                else:
-                    u.name, u.role, u.active = name.strip() or u.name, role, active
-                    if pw:
-                        u.hash = hash_password(pw)
-                    users[sel] = stamp(u)
-                    _save_users(ctx, users, t("user_saved", user=sel))

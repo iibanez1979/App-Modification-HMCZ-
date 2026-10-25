@@ -10,14 +10,13 @@ import time
 import streamlit as st
 
 from core import config
-from core.auth import (USERS_PATH, User, authenticate, check_password, dump_users, emergency_admin, hash_password,
-                       load_users, stamp, validate_new)
+from core.auth import User, authenticate, load_users, master_account
 from core.events import initialize, is_initialized
 from core.i18n import translator
 from core.project import build_project
 from storage import StorageError, local_dir, make_store
 from ui import admin, supervisor
-from ui.common import Ctx, note, show_flash
+from ui.common import Ctx, note, password_form, show_flash
 from ui.theme import footer, header, inject_css, sidebar_logo
 
 st.set_page_config(page_title="HMCZ Truck Modification", page_icon=str(config.LOGO_PATH), layout="wide",
@@ -65,7 +64,7 @@ except StorageError as exc:
     st.stop()
 
 users = load_users(snapshot)
-emergency = emergency_admin(_secrets())
+master = master_account(_secrets())
 
 
 def language_picker(where) -> None:
@@ -74,38 +73,6 @@ def language_picker(where) -> None:
     if choice and choice != ss.lang:
         ss.lang = choice
         st.rerun()
-
-
-# ─── Primer uso: crear el primer administrador ────────────────────────────
-def first_admin_page() -> None:
-    header(config.PROJECT_NAME, t("setup_subtitle"))
-    _, mid, _ = st.columns([1, 1.4, 1])
-    with mid:
-        language_picker(st)
-        note(t("setup_help", where=store.label))
-        with st.form("setup"):
-            username = st.text_input(t("username"), help=t("username_help")).strip().lower()
-            name = st.text_input(t("full_name"))
-            pw = st.text_input(t("password"), type="password", help=t("password_help"))
-            pw2 = st.text_input(t("confirm_password"), type="password")
-            if st.form_submit_button(t("create_admin"), type="primary", width="stretch"):
-                err = validate_new(username, pw)
-                if err or not name.strip():
-                    st.error(t(err or "err_name"))
-                elif pw != pw2:
-                    st.error(t("err_password_match"))
-                else:
-                    try:
-                        with st.spinner(t("saving")):
-                            user = stamp(User(username, name.strip(), "admin", hash_password(pw)))
-                            store.write(USERS_PATH, dump_users({username: user}), f"[app] primer administrador · {username}")
-                            if not is_initialized(snapshot):
-                                initialize(store, username)
-                    except StorageError as exc:
-                        st.error(f"{t('save_failed')} {exc}")
-                        return
-                    ss.user = user
-                    st.rerun()
 
 
 # ─── Inicio de sesión ─────────────────────────────────────────────────────
@@ -118,7 +85,7 @@ def login_page() -> None:
             username = st.text_input(t("username"))
             pw = st.text_input(t("password"), type="password")
             if st.form_submit_button(t("login"), type="primary", width="stretch", icon=":material/login:"):
-                user = authenticate(users, username, pw, emergency)
+                user = authenticate(users, username, pw, master)
                 if user:
                     ss.user = user
                     ss.pop("login_fail", None)
@@ -130,25 +97,23 @@ def login_page() -> None:
 
 
 if "user" not in ss:
-    if not users and not emergency:
-        first_admin_page()
-    else:
-        login_page()
+    login_page()
     st.stop()
 
-# La sesión se valida contra el archivo de usuarios en cada carga: si un
-# administrador desactiva a alguien, pierde el acceso en el siguiente clic.
+# La sesión se valida contra el archivo de usuarios en cada carga: si el dueño
+# desactiva a alguien o le cambia el rol, el cambio aplica en el siguiente clic.
 user: User = ss.user
-if user.username in users:
-    current = users[user.username]
-    if not current.active:
+if user.is_master:
+    if not master or master.username != user.username:
         ss.clear()
         st.rerun()
-    user = ss.user = current
-elif not (emergency and user.username == emergency[0]):
+    user = ss.user = master
+elif user.username in users and users[user.username].active and not (master and user.username == master.username):
+    user = ss.user = users[user.username]
+else:
     ss.clear()
     st.rerun()
-is_emergency = bool(emergency and user.username == emergency[0] and user.username not in users)
+ctx = Ctx(store=store, project=project, user=user, users=users, lang=ss.lang, t=t)
 
 # ─── Barra lateral ────────────────────────────────────────────────────────
 with st.sidebar:
@@ -157,32 +122,20 @@ with st.sidebar:
                 unsafe_allow_html=True)
     st.write("")
     language_picker(st)
+    # Cada rol ve solo su vista; únicamente el maestro puede alternar entre ambas
     view = "admin" if user.is_admin else "supervisor"
-    if user.is_admin:
+    if user.is_master:
         view = st.segmented_control(t("view"), ["admin", "supervisor"], default="admin", key="view_pick",
                                     format_func=lambda v: t("view_" + v)) or "admin"
     st.divider()
     if st.button(t("refresh"), icon=":material/refresh:", width="stretch", help=t("refresh_help")):
         load_state.clear()
         st.rerun()
-    if not is_emergency:
+    # Los administradores cambian su contraseña en la pestaña de configuración;
+    # la del maestro está en los secretos
+    if user.role == "supervisor":
         with st.expander(t("change_password"), icon=":material/key:"):
-            with st.form("chg_pw", clear_on_submit=True):
-                old = st.text_input(t("current_password"), type="password")
-                new = st.text_input(t("new_password"), type="password", help=t("password_help"))
-                if st.form_submit_button(t("save")):
-                    if not check_password(old, user.hash):
-                        st.error(t("err_current_password"))
-                    elif len(new) < 8:
-                        st.error(t("err_password_short"))
-                    else:
-                        updated = dict(users)
-                        updated[user.username] = stamp(User(**{**vars(user), "hash": hash_password(new)}))
-                        try:
-                            store.write(USERS_PATH, dump_users(updated), f"[app] cambio de contraseña · {user.username}")
-                            st.success(t("password_changed"))
-                        except StorageError as exc:
-                            st.error(f"{t('save_failed')} {exc}")
+            password_form(ctx, "chg_pw")
     if st.button(t("logout"), icon=":material/logout:", width="stretch"):
         lang = ss.lang
         ss.clear()
@@ -196,11 +149,8 @@ with st.sidebar:
 show_flash()
 subtitle = t("subtitle_admin") if view == "admin" else t("subtitle_supervisor")
 header(config.PROJECT_NAME, f"{config.FLEET} · {subtitle}")
-if is_emergency:
-    st.warning(t("emergency_mode"), icon=":material/shield:")
-
 if project is None:
-    if user.is_admin:
+    if user.is_admin or user.is_master:
         note(t("init_help"))
         if st.button(t("init_button"), type="primary", icon=":material/rocket_launch:"):
             try:
@@ -214,7 +164,6 @@ if project is None:
         note(t("not_initialized"))
     st.stop()
 
-ctx = Ctx(store=store, project=project, user=user, users=users, lang=ss.lang, t=t, emergency=is_emergency)
 if view == "admin":
     admin.render(ctx)
 else:

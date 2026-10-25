@@ -17,6 +17,11 @@ _CSS = """
 html,body,[class*="css"]{font-family:'Barlow',sans-serif;}
 .block-container{padding-top:1rem!important;padding-left:2rem!important;padding-right:2rem!important;max-width:1400px;}
 #MainMenu,footer{visibility:hidden;}
+/* Barra superior de Streamlit (GitHub, Share, menú, Deploy): oculta. Se deja
+   el encabezado transparente para no perder el botón que abre la barra lateral. */
+[data-testid="stToolbar"],[data-testid="stToolbarActions"],[data-testid="stMainMenu"],[data-testid="stAppDeployButton"],
+.stAppDeployButton,[data-testid="stDecoration"],[data-testid="stStatusWidget"]{display:none!important;}
+header[data-testid="stHeader"]{background:transparent!important;box-shadow:none!important;}
 
 /* Barra lateral oscura */
 [data-testid="stSidebar"]{background:#1A1A1A!important;border-right:3px solid #FF6B00;}
