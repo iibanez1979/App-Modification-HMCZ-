@@ -1,0 +1,6 @@
+{
+  "lookahead_days": 14,
+  "max_working_days": 5,
+  "timezone": "Africa/Lusaka",
+  "holidays": []
+}
