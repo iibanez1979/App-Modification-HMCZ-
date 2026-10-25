@@ -2,10 +2,12 @@
 
 - Se guardan en `users/users.json` (rama `data`) con la contraseña cifrada con
   bcrypt: nadie, ni siquiera quien vea el archivo, puede leer las contraseñas.
+- Los usuarios los crea y modifica el dueño de la app con
+  `scripts/users.py` (desde la terminal); la app no tiene gestión de usuarios.
 - Un usuario que deja el proyecto se desactiva (no se borra) para conservar su
   historial.
-- Administrador de emergencia: opcional, definido en los secretos del servidor
-  (fuera del repositorio). Permite entrar si el archivo de usuarios se daña.
+- Usuario maestro: definido en los secretos del servidor (fuera del
+  repositorio). Puede usar las vistas de administrador y de supervisor.
 """
 
 from __future__ import annotations
@@ -21,13 +23,14 @@ import bcrypt
 USERS_PATH = "users/users.json"
 MIN_PASSWORD = 8
 USERNAME_RE = re.compile(r"^[a-z0-9._-]{3,30}$")
+MASTER_ROLE = "master"
 
 
 @dataclass
 class User:
     username: str
     name: str
-    role: str  # "admin" | "supervisor"
+    role: str  # "admin" | "supervisor" | "master" (solo el usuario maestro de los secretos)
     hash: str = ""
     active: bool = True
     updated: str = ""
@@ -35,6 +38,10 @@ class User:
     @property
     def is_admin(self) -> bool:
         return self.role == "admin"
+
+    @property
+    def is_master(self) -> bool:
+        return self.role == MASTER_ROLE
 
 
 def hash_password(password: str) -> str:
@@ -77,19 +84,19 @@ def stamp(user: User) -> User:
     return user
 
 
-def emergency_admin(secrets: Mapping | None) -> tuple[str, str] | None:
-    """(usuario, hash) del administrador de emergencia, si está configurado."""
-    sec = secrets.get("emergency_admin") if secrets else None
+def master_account(secrets: Mapping | None) -> User | None:
+    """Usuario maestro definido en la sección [master] de los secretos, si existe."""
+    sec = secrets.get("master") if secrets else None
     if sec and sec.get("username") and sec.get("password_hash"):
-        return str(sec["username"]).strip().lower(), str(sec["password_hash"])
+        username = str(sec["username"]).strip().lower()
+        return User(username, str(sec.get("name") or username), MASTER_ROLE, str(sec["password_hash"]))
     return None
 
 
-def authenticate(users: dict[str, User], username: str, password: str,
-                 emergency: tuple[str, str] | None = None) -> User | None:
+def authenticate(users: dict[str, User], username: str, password: str, master: User | None = None) -> User | None:
     username = username.strip().lower()
-    if emergency and username == emergency[0] and check_password(password, emergency[1]):
-        return User(username=username, name="Emergency admin", role="admin")
+    if master and username == master.username:  # el maestro nunca se toma del archivo de usuarios
+        return master if check_password(password, master.hash) else None
     user = users.get(username)
     if user and user.active and check_password(password, user.hash):
         return user

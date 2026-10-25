@@ -140,9 +140,12 @@ def test_users_roundtrip_and_auth():
     assert validate_new("bob", "short") == "err_password_short"
 
 
-def test_emergency_admin():
-    em = ("rescue", hash_password("rescue123"))
-    assert authenticate({}, "rescue", "rescue123", em).is_admin
+def test_master_account():
+    from core.auth import master_account
+    master = master_account({"master": {"username": "Boss", "password_hash": hash_password("boss-pass")}})
+    assert authenticate({}, "boss", "boss-pass", master).is_master
+    assert authenticate({}, "boss", "wrong", master) is None
+    assert master_account({}) is None
 
 
 # ─── Textos ───────────────────────────────────────────────────────────────

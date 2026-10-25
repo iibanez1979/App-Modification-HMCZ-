@@ -3,7 +3,7 @@ comentarios y notas de atraso."""
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 
 import pandas as pd
 import streamlit as st
@@ -26,6 +26,10 @@ def _bump(key: str) -> None:
 
 
 def _to_date(value) -> date | None:
+    if value is None or value is pd.NaT:
+        return None
+    if isinstance(value, datetime):  # incluye pd.Timestamp
+        return value.date()
     if isinstance(value, date):
         return value
     try:
@@ -140,8 +144,10 @@ def _sop_tasks(ctx: Ctx, truck: str, act_key: str) -> None:
     editor_key = f"ed_{truck}_{act_key}_{nonce}_{int(only_open)}"
     view = base[~base.status.isin([t("ts_done"), t("ts_na")])] if only_open else base
 
+    # La fecha se envía como columna de fecha real: si todas están vacías, el
+    # editor recibiría una columna sin tipo y no permitiría escribir en ella.
     st.data_editor(
-        view,
+        view.assign(date=pd.to_datetime(view.date)),
         key=editor_key,
         hide_index=True,
         width="stretch",
@@ -153,8 +159,8 @@ def _sop_tasks(ctx: Ctx, truck: str, act_key: str) -> None:
             "task_id": st.column_config.TextColumn(t("col_task_id"), width=75, pinned=True),
             "stage": st.column_config.TextColumn(t("col_stage"), width=110),
             "task": st.column_config.TextColumn(t("col_task"), width=290),
-            "qc": st.column_config.TextColumn(t("col_qc"), width=58, help=t("col_qc_help")),
-            "cond": st.column_config.CheckboxColumn(t("col_cond"), width=58, help=t("col_cond_help")),
+            "qc": st.column_config.TextColumn(t("col_qc"), width=115, help=t("col_qc_help")),
+            "cond": st.column_config.CheckboxColumn(t("col_cond"), width=125, help=t("col_cond_help")),
             "status": st.column_config.SelectboxColumn(t("col_status"), options=list(status_labels), required=True, width=115),
             "actual_mh": st.column_config.NumberColumn(t("col_mh"), min_value=0.0, max_value=500.0, width=85),
             "supervisor": st.column_config.TextColumn(t("col_supervisor"), width=120),
