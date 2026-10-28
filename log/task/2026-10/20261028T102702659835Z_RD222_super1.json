@@ -1,0 +1,20 @@
+{
+ "kind": "task",
+ "ts": "2026-10-28T10:27:02.659835+00:00",
+ "user": "super1",
+ "truck": "RD222",
+ "act": "trailing_assy",
+ "updates": [
+  {
+   "task_id": "_ACTIVITY_",
+   "progress": 60,
+   "actual_mh": 4.0,
+   "supervisor": "Yudis",
+   "technicians": "MMTS contractor",
+   "date": "2026-10-27",
+   "remarks": "",
+   "status": "in_progress"
+  }
+ ],
+ "comment": ""
+}
