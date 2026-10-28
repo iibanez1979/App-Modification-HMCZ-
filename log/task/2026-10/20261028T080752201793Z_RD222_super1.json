@@ -1,0 +1,20 @@
+{
+ "kind": "task",
+ "ts": "2026-10-28T08:07:52.201793+00:00",
+ "user": "super1",
+ "truck": "RD222",
+ "act": "trailing_assy",
+ "updates": [
+  {
+   "task_id": "_ACTIVITY_",
+   "progress": 60,
+   "actual_mh": 4.0,
+   "supervisor": "Ivan Ibanez",
+   "technicians": "Contractors",
+   "date": "2026-10-28",
+   "remarks": "No delays reported",
+   "status": "in_progress"
+  }
+ ],
+ "comment": ""
+}
