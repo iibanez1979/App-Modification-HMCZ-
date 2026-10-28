@@ -22,6 +22,19 @@ html,body,[class*="css"]{font-family:'Barlow',sans-serif;}
 [data-testid="stToolbar"],[data-testid="stToolbarActions"],[data-testid="stMainMenu"],[data-testid="stAppDeployButton"],
 .stAppDeployButton,[data-testid="stDecoration"],[data-testid="stStatusWidget"]{display:none!important;}
 header[data-testid="stHeader"]{background:transparent!important;box-shadow:none!important;}
+/* Keep the native sidebar reopen control visible when the sidebar is collapsed.
+   Streamlit may render this control under either test ID depending on version. */
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"]{
+  display:flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+  position:relative;
+  z-index:100000!important;
+}
+header[data-testid="stHeader"]{visibility:visible!important;pointer-events:auto!important;}
+
 
 /* Barra lateral oscura */
 [data-testid="stSidebar"]{background:#1A1A1A!important;border-right:3px solid #FF6B00;}
